@@ -10,7 +10,7 @@ def nine_nine_nine():
     #准备成功 睡眠3秒 进入成功循环
     print('成功点击挑战,进入循环查询成功界面')
     if success:
-        time.sleep(15)
+        time.sleep(18)
     while True:
         arr = [
             "./picture/999/s1.png",
