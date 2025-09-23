@@ -6,6 +6,7 @@ import numpy as np
 import subprocess
 import os
 
+
 class ADBController:
     def __init__(self, device_id=None):
         self.device_id = device_id
@@ -70,7 +71,8 @@ class ADBController:
         """发送按键事件"""
         return self.run_adb(f"shell input keyevent {keycode}")[0]
 
-def common_handle_fetch_and_click(template_path, adb: ADBController, screenshot):
+
+def common_handle_fetch_and_click(template_path, adb: ADBController, screenshot, max_val_set=0.8):
     # 读取模板
     template = cv2.imread(template_path, cv2.IMREAD_UNCHANGED)
     if template is None:
@@ -87,7 +89,7 @@ def common_handle_fetch_and_click(template_path, adb: ADBController, screenshot)
 
     print(f"匹配图片{template_path} 匹配度: {max_val:.3f}")
 
-    if max_val >= 0.8:
+    if max_val >= max_val_set:
 
         x, y = max_loc
         center_x = x + random.randint(1, template.shape[1] - 1)
@@ -100,8 +102,9 @@ def common_handle_fetch_and_click(template_path, adb: ADBController, screenshot)
 
     return False
 
+
 # 使用示例
-def find_and_click_adb(template_path, device_id=None):
+def find_and_click_adb(template_path, device_id=None, max_val_set=0.8):
     """
     使用ADB进行模板匹配和点击
     """
@@ -133,11 +136,11 @@ def find_and_click_adb(template_path, device_id=None):
 
         print(f"匹配图片{template_path} 匹配度: {max_val:.3f}")
 
-        if max_val >= 0.8:
+        if max_val >= max_val_set:
 
             x, y = max_loc
-            center_x = x +  random.randint(1, template.shape[1] - 1)
-            center_y = y + random.randint(1, template.shape[0]-1)
+            center_x = x + random.randint(1, template.shape[1] - 1)
+            center_y = y + random.randint(1, template.shape[0] - 1)
 
             # 使用ADB点击（不是pyautogui！）
             if adb.tap(center_x, center_y):
@@ -150,7 +153,8 @@ def find_and_click_adb(template_path, device_id=None):
         print(f"错误: {e}")
         return False
 
-def find_and_click_adb_many_picture(template_path, device_id=None):
+
+def find_and_click_adb_many_picture(template_path, device_id=None, max_val_set=0.8):
     # 初始化ADB控制器
     adb = ADBController(device_id)
     # 使用ADB截图（不是pyautogui！）
@@ -160,10 +164,85 @@ def find_and_click_adb_many_picture(template_path, device_id=None):
         return False
 
     for path in template_path:
-        is_find = common_handle_fetch_and_click(path, adb, screenshot)
+        is_find = common_handle_fetch_and_click(path, adb, screenshot, max_val_set)
         if is_find:
             return True
     return False
+
+
+def find_and_click_adb_many_picture_orb(template_path, device_id=None, min_match_count=10):
+    # 初始化ADB控制器
+    adb = ADBController(device_id)
+    # 使用ADB截图（不是pyautogui！）
+    screenshot = adb.screenshot()
+    if screenshot is None:
+        print("ADB截图失败")
+        return False
+
+    for path in template_path:
+        is_find = orb_match_and_click(path, screenshot, adb, min_match_count)
+        if is_find:
+            return True
+    return False
+
+
+def orb_match_and_click(template_path, screenshot, adb, min_match_count=10):
+    """
+    使用 ORB 特征点进行匹配，并点击目标位置
+    """
+    # 读取模板
+    template = cv2.imread(template_path, cv2.IMREAD_COLOR)
+    if template is None:
+        print(f"无法读取模板: {template_path}")
+        return False
+
+    # 转灰度
+    gray_template = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
+    gray_screenshot = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
+
+    # 初始化 ORB 检测器
+    orb = cv2.ORB_create(nfeatures=1000)
+
+    # 检测并计算特征点
+    kp1, des1 = orb.detectAndCompute(gray_template, None)
+    kp2, des2 = orb.detectAndCompute(gray_screenshot, None)
+
+    if des1 is None or des2 is None:
+        print("未检测到足够特征点")
+        return False
+
+    # BF 匹配
+    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+    matches = bf.match(des1, des2)
+    matches = sorted(matches, key=lambda x: x.distance)
+
+    print(f"匹配到 {len(matches)} 个特征点")
+
+    if len(matches) > min_match_count:
+        # 取前 N 个点
+        src_pts = np.float32([kp1[m.queryIdx].pt for m in matches[:min_match_count]]).reshape(-1, 1, 2)
+        dst_pts = np.float32([kp2[m.trainIdx].pt for m in matches[:min_match_count]]).reshape(-1, 1, 2)
+
+        # 计算单应性矩阵
+        M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
+
+        if M is not None:
+            h, w = template.shape[:2]
+            pts = np.float32([[0, 0], [0, h - 1], [w - 1, h - 1], [w - 1, 0]]).reshape(-1, 1, 2)
+            dst = cv2.perspectiveTransform(pts, M)
+
+            # 取目标区域中心点
+            center_x = int(np.mean(dst[:, 0, 0])) + random.randint(-5, 5)
+            center_y = int(np.mean(dst[:, 0, 1])) + random.randint(-5, 5)
+
+            if adb.tap(center_x, center_y):
+                print(f"ORB点击位置: ({center_x}, {center_y})")
+                return True
+
+    print("ORB匹配失败")
+    return False
+
+
 # 连接测试
 def test_adb_connection():
     """测试ADB连接"""
@@ -175,5 +254,3 @@ def test_adb_connection():
     except:
         print("ADB未安装或未在PATH中")
         return False
-
-
