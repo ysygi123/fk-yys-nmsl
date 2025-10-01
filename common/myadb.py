@@ -254,3 +254,21 @@ def test_adb_connection():
     except:
         print("ADB未安装或未在PATH中")
         return False
+
+def adb_screenshot(device_id, region=None):
+    """
+    截图并裁剪
+    :param device_id: adb 设备号
+    :param region: (x, y, w, h) 指定区域，None 表示全屏
+    """
+    result = subprocess.run(
+        ["adb", "-s", device_id, "exec-out", "screencap", "-p"],
+        stdout=subprocess.PIPE
+    )
+    img = cv2.imdecode(np.frombuffer(result.stdout, np.uint8), cv2.IMREAD_COLOR)
+    if region:
+        x, y, w, h = region
+        img = img[y:y+h, x:x+w]
+    return img
+
+# 示例：截取 emulator-5554 的 (100, 200, 300, 400) 区域
