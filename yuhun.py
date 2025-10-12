@@ -2,9 +2,10 @@ import common.myadb
 import cv2
 import time
 import random
+from concurrent.futures import ThreadPoolExecutor
 
-my = '127.0.0.1:16385'
-host = '127.0.0.1:5555'
+my = 'emulator-5554'
+host = 'emulator-5556'
 
 def click_tiao_zhan():
     success = common.myadb.find_and_click_adb_many_picture(['./picture/yuhun/tiaozhan.png'], host)
@@ -12,10 +13,23 @@ def click_tiao_zhan():
     print(f'查看自有匹配结果 {success}')
 
 def click_chenggong():
-    success = common.myadb.find_and_click_adb_many_picture(['./picture/yuhun/finish1.png'], host)
-    success = common.myadb.find_and_click_adb_many_picture(['./picture/yuhun/finish1.png'], my)
-    success = common.myadb.find_and_click_adb_many_picture(['./picture/yuhun/finish2.png'], host)
-    success = common.myadb.find_and_click_adb_many_picture(['./picture/yuhun/finish2.png'], my)
+    # success = common.myadb.find_and_click_adb_many_picture(['./picture/yuhun/finish1.png'], host)
+    # success = common.myadb.find_and_click_adb_many_picture(['./picture/yuhun/finish1.png'], my)
+    # success = common.myadb.find_and_click_adb_many_picture(['./picture/yuhun/finish2.png'], host)
+    # success = common.myadb.find_and_click_adb_many_picture(['./picture/yuhun/finish2.png'], my)
+    # 前两行并发执行
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        executor.submit(common.myadb.find_and_click_adb_many_picture,
+                        ['./picture/yuhun/finish1.png'], host)
+        executor.submit(common.myadb.find_and_click_adb_many_picture,
+                        ['./picture/yuhun/finish1.png'], my)
+
+    # 后两行并发执行
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        executor.submit(common.myadb.find_and_click_adb_many_picture,
+                        ['./picture/yuhun/finish2.png'], host)
+        executor.submit(common.myadb.find_and_click_adb_many_picture,
+                        ['./picture/yuhun/finish2.png'], my)
 
 tn = time.time()
 while True:
