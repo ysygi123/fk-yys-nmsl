@@ -14,9 +14,6 @@ def nine_nine_nine():
         time.sleep(1)
     arr = [
         "./picture/999/s1.png",
-        "./picture/999/s3.png",
-        "./picture/999/s4.png",
-        "./picture/999/s6.png",
     ]
     random.shuffle(arr)
     is_success = common.myadb.find_and_click_adb_many_picture(arr)

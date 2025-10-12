@@ -42,6 +42,6 @@ while True:
     #     time.sleep(60 * random.uniform(3, 7))
 
 # screenshot = common.myadb.adb_screenshot("emulator-5554", (0, 0, 700, 700))
-# cv2.imwrite("partial.png", screenshot)
+# cv2.imwrite("tiao_zhan2.png", screenshot)
 # screenshot = common.myadb.adb_screenshot("127.0.0.1:16416", (1750, 900, 150, 130))
 # cv2.imwrite("picture/yuhun/tiaozhan.png", screenshot)
