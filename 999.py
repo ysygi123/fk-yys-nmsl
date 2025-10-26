@@ -31,11 +31,11 @@ if common.myadb.test_adb_connection() is False:
     print("请先安装ADB并配置环境变量")
 else:
     while True:
-        tn = time.time()
-        t_diff = tn - t_start
-        if t_diff / 60 >= 15:
-            stop_time = random.randint(10, 20)
-            time.sleep(stop_time * 60)
-            t_start = time.time()
-            print(f"执行时间太久 要休息 {t_diff}分钟")
+        # tn = time.time()
+        # t_diff = tn - t_start
+        # if t_diff / 60 >= 15:
+        #     stop_time = random.randint(10, 20)
+        #     time.sleep(stop_time * 60)
+        #     t_start = time.time()
+        #     print(f"执行时间太久 要休息 {t_diff}分钟")
         nine_nine_nine()
