@@ -5,12 +5,14 @@ import random
 from concurrent.futures import ThreadPoolExecutor
 
 my = 'emulator-5554'
-host = 'emulator-5556'
+host = 'emulator-5574'
+
 
 def click_tiao_zhan():
     success = common.myadb.find_and_click_adb_many_picture(['./picture/yuhun/tiaozhan.png'], host)
     # success = common.myadb.find_and_click_adb_many_picture(['./picture/yuhun/bb.jpg'], "127.0.0.1:16416")
     print(f'查看自有匹配结果 {success}')
+
 
 def click_chenggong():
     # success = common.myadb.find_and_click_adb_many_picture(['./picture/yuhun/finish1.png'], host)
@@ -22,14 +24,15 @@ def click_chenggong():
         executor.submit(common.myadb.find_and_click_adb_many_picture,
                         ['./picture/yuhun/finish1.png'], host)
         executor.submit(common.myadb.find_and_click_adb_many_picture,
-                        ['./picture/yuhun/finish1.png'], my)
+                        ['./picture/yuhun/finish2.png'], host)
 
     # 后两行并发执行
     with ThreadPoolExecutor(max_workers=2) as executor:
         executor.submit(common.myadb.find_and_click_adb_many_picture,
-                        ['./picture/yuhun/finish2.png'], host)
+                        ['./picture/yuhun/finish1.png'], my)
         executor.submit(common.myadb.find_and_click_adb_many_picture,
                         ['./picture/yuhun/finish2.png'], my)
+
 
 tn = time.time()
 while True:
