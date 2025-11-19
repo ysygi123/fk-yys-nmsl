@@ -20,20 +20,20 @@ def click_chenggong():
     # success = common.myadb.find_and_click_adb_many_picture(['./picture/yuhun/finish2.png'], host)
     # success = common.myadb.find_and_click_adb_many_picture(['./picture/yuhun/finish2.png'], my)
     # 前两行并发执行
-    with ThreadPoolExecutor(max_workers=2) as executor:
+    with ThreadPoolExecutor(max_workers=1) as executor:
         executor.submit(common.myadb.find_and_click_adb_many_picture,
                         ['./picture/yuhun/finish1.png'], host)
         executor.submit(common.myadb.find_and_click_adb_many_picture,
-                        ['./picture/yuhun/yu_hun_tmp_jie_mian.png'], host, 0.6)
+                        ['./picture/yuhun/yu_hun_tmp_jie_mian.png'], host, 0.64)
         executor.submit(common.myadb.find_and_click_adb_many_picture,
                         ['./picture/yuhun/finish2.png'], host)
 
     # 后两行并发执行
-    with ThreadPoolExecutor(max_workers=2) as executor:
+    with ThreadPoolExecutor(max_workers=1) as executor:
         executor.submit(common.myadb.find_and_click_adb_many_picture,
                         ['./picture/yuhun/finish1.png'], my)
         executor.submit(common.myadb.find_and_click_adb_many_picture,
-                        ['./picture/yuhun/yu_hun_tmp_jie_mian.png'], my, 0.6)
+                        ['./picture/yuhun/yu_hun_tmp_jie_mian.png'], my, 0.64)
         executor.submit(common.myadb.find_and_click_adb_many_picture,
                         ['./picture/yuhun/finish2.png'], my)
 
