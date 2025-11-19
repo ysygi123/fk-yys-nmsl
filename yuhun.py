@@ -32,8 +32,8 @@ def run_sequence(device):
 def click_chenggong():
     #最新并发
     with ThreadPoolExecutor(max_workers=2) as executor:
-        executor.submit(run_sequence, 'host')
-        executor.submit(run_sequence, 'my')
+        executor.submit(run_sequence, host)
+        executor.submit(run_sequence, my)
     # success = common.myadb.find_and_click_adb_many_picture(['./picture/yuhun/finish1.png'], host)
     # success = common.myadb.find_and_click_adb_many_picture(['./picture/yuhun/finish1.png'], my)
     # success = common.myadb.find_and_click_adb_many_picture(['./picture/yuhun/finish2.png'], host)
