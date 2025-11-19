@@ -5,7 +5,7 @@ import random
 from concurrent.futures import ThreadPoolExecutor
 
 my = 'emulator-5554'
-host = 'emulator-5574'
+host = 'emulator-5556'
 
 
 def click_tiao_zhan():
@@ -21,12 +21,13 @@ def run_sequence(device):
     # 第 1 步
     find1 = common.myadb.find_and_click_adb_many_picture(['./picture/yuhun/finish1.png'], device)
     if find1:
-        time.sleep(0.2)
+        time.sleep(0.1)
     # 第 2 步（带置信度参数）
     mayFind = common.myadb.common_handle_fetch('./picture/yuhun/yu_hun_tmp_jie_mian2.png', device)
     if mayFind:
+        time.sleep(0.1)
         common.myadb.rand_click(device, 800, 1000)
-        time.sleep(0.5)
+        time.sleep(0.1)
     common.myadb.find_and_click_adb_many_picture(['./picture/yuhun/finish2.png'], device)
     # 第 3 步
 
