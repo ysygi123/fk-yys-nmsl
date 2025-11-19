@@ -122,7 +122,7 @@ def common_handle_fetch(template_path, device_id=None, max_val_set=0.8):
 
     min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
 
-    print(f"单纯查找 匹配图片{template_path} 匹配度: {max_val:.3f}")
+    print(f"{device_id} 单纯查找 匹配图片{template_path} 匹配度: {max_val:.3f}")
 
     if max_val >= max_val_set:
          return True
@@ -134,7 +134,7 @@ def rand_click(device_id, center_x, center_y):
     center_y = center_y + random.randint(1, 200 - 1)
     adb = ADBController(device_id)
     if adb.tap(center_x, center_y):
-        print(f"ADB点击位置: ({center_x}, {center_y})")
+        print(f"{device_id}的ADB点击位置: ({center_x}, {center_y})")
         return True
 
 # 使用示例
