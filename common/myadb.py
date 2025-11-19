@@ -101,6 +101,33 @@ def common_handle_fetch_and_click(template_path, adb: ADBController, screenshot,
             return True
 
     return False
+def common_handle_fetch(template_path, device_id=None, max_val_set=0.8):
+    adb = ADBController(device_id)
+    # 使用ADB截图（不是pyautogui！）
+    screenshot = adb.screenshot()
+    if screenshot is None:
+        print("ADB截图失败" + device_id)
+        return False
+    # 读取模板
+    template = cv2.imread(template_path, cv2.IMREAD_UNCHANGED)
+    if template is None:
+        print(f"无法读取模板: {template_path}")
+        return False
+    if len(template.shape) == 3 and template.shape[2] == 4:
+        template_img = template[:, :, :3]
+        mask = template[:, :, 3]
+        result = cv2.matchTemplate(screenshot, template_img, cv2.TM_CCOEFF_NORMED, mask=mask)
+    else:
+        result = cv2.matchTemplate(screenshot, template, cv2.TM_CCOEFF_NORMED)
+
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+
+    print(f"单纯查找 匹配图片{template_path} 匹配度: {max_val:.3f}")
+
+    if max_val >= max_val_set:
+         return True
+
+    return False
 
 def rand_click(device_id, center_x, center_y):
     center_x = center_x + random.randint(1, 200 - 1)

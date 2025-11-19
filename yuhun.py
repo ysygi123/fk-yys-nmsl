@@ -19,14 +19,19 @@ def run_sequence(device):
     在单个设备上按顺序运行三步（阻塞执行，出现异常会抛出）
     """
     # 第 1 步
-    common.myadb.find_and_click_adb_many_picture(['./picture/yuhun/finish1.png'], device)
+    find1 = common.myadb.find_and_click_adb_many_picture(['./picture/yuhun/finish1.png'], device)
+    if find1:
+        time.sleep(0.2)
     # 第 2 步（带置信度参数）
-    mayFind = common.myadb.find_and_click_adb_many_picture(['./picture/yuhun/yu_hun_tmp_jie_mian.png'], device, 0.64)
-    # 第 3 步
-    common.myadb.find_and_click_adb_many_picture(['./picture/yuhun/finish2.png'], device)
-
+    mayFind = common.myadb.common_handle_fetch('./picture/yuhun/yu_hun_tmp_jie_mian2.png', device)
     if mayFind:
-        common.myadb.find_and_click_adb_many_picture(['./picture/yuhun/finish2.png'], device)
+        common.myadb.rand_click(device, 800, 1000)
+        time.sleep(0.5)
+    common.myadb.find_and_click_adb_many_picture(['./picture/yuhun/finish2.png'], device)
+    # 第 3 步
+
+    # if mayFind:
+    #     common.myadb.find_and_click_adb_many_picture(['./picture/yuhun/finish2.png'], device)
 
 
 def click_chenggong():
