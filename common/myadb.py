@@ -102,6 +102,13 @@ def common_handle_fetch_and_click(template_path, adb: ADBController, screenshot,
 
     return False
 
+def rand_click(device_id, center_x, center_y):
+    center_x = center_x + random.randint(1, 200 - 1)
+    center_y = center_y + random.randint(1, 200 - 1)
+    adb = ADBController(device_id)
+    if adb.tap(center_x, center_y):
+        print(f"ADB点击位置: ({center_x}, {center_y})")
+        return True
 
 # 使用示例
 def find_and_click_adb(template_path, device_id=None, max_val_set=0.8):
