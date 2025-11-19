@@ -5,7 +5,7 @@ import common.myadb
 
 
 def nine_nine_nine():
-    path = "./picture/999/p1.png"
+    path = "picture/999/yu_ling_tiao_zhan.png"
     # 使用ADB进行模板匹配和点击
     success = common.myadb.find_and_click_adb(path, "emulator-5554")
     # 准备成功 睡眠3秒 进入成功循环
@@ -14,7 +14,7 @@ def nine_nine_nine():
         time.sleep(1)
     arr = [
         # "./picture/999/s1.png",
-        "./picture/999/s2.png",
+        "./picture/999/yu_ling_success.png",
     ]
     random.shuffle(arr)
     is_success = common.myadb.find_and_click_adb_many_picture(arr)
