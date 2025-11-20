@@ -26,7 +26,7 @@ def run_sequence(device):
     mayFind = common.myadb.common_handle_fetch('./picture/yuhun/yu_hun_tmp_jie_mian2.png', device)
     if mayFind:
         time.sleep(0.1)
-        common.myadb.rand_click(device, 800, 1000)
+        common.myadb.rand_click(device, 1550, 475)
         time.sleep(0.1)
     common.myadb.find_and_click_adb_many_picture(['./picture/yuhun/finish2.png'], device)
     # 第 3 步
