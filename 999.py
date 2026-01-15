@@ -20,7 +20,7 @@ def nine_nine_nine():
     is_success = common.myadb.find_and_click_adb_many_picture(arr)
     if is_success:
         print('成功点击成功，准备迎接挑战')
-        time.sleep(random.randint(1, 3))
+        time.sleep(random.uniform(0.8, 1.2))
         return
     time.sleep(1)
     print("\n")
