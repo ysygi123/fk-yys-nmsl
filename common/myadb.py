@@ -101,6 +101,7 @@ def common_handle_fetch_and_click(template_path, adb: ADBController, screenshot,
             return True
 
     return False
+# common_handle_fetch 查找对应图片
 def common_handle_fetch(template_path, device_id=None, max_val_set=0.8):
     adb = ADBController(device_id)
     # 使用ADB截图（不是pyautogui！）
@@ -132,6 +133,14 @@ def common_handle_fetch(template_path, device_id=None, max_val_set=0.8):
 def rand_click(device_id, center_x, center_y):
     center_x = center_x + random.randint(1, 200 - 1)
     center_y = center_y + random.randint(1, 200 - 1)
+    adb = ADBController(device_id)
+    if adb.tap(center_x, center_y):
+        print(f"{device_id}的ADB点击位置: ({center_x}, {center_y})")
+        return True
+
+def rand_click_by_four_point(device_id, center_x1, center_y1, center_x2, center_y2):
+    center_x = random.randint(center_x1, center_x2)
+    center_y =random.randint(center_y1, center_y2)
     adb = ADBController(device_id)
     if adb.tap(center_x, center_y):
         print(f"{device_id}的ADB点击位置: ({center_x}, {center_y})")
